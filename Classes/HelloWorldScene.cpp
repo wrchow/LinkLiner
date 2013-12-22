@@ -1,6 +1,8 @@
 #include "HelloWorldScene.h"
+#include "SimpleAudioEngine.h"
 
-USING_NS_CC;
+using namespace cocos2d;
+using namespace CocosDenshion;
 
 CCScene* HelloWorld::scene()
 {
@@ -26,9 +28,6 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
-    CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
-    CCPoint origin = CCDirector::sharedDirector()->getVisibleOrigin();
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -39,14 +38,12 @@ bool HelloWorld::init()
                                         "CloseNormal.png",
                                         "CloseSelected.png",
                                         this,
-                                        menu_selector(HelloWorld::menuCloseCallback));
-    
-	pCloseItem->setPosition(ccp(origin.x + visibleSize.width - pCloseItem->getContentSize().width/2 ,
-                                origin.y + pCloseItem->getContentSize().height/2));
+                                        menu_selector(HelloWorld::menuCloseCallback) );
+    pCloseItem->setPosition( ccp(CCDirector::sharedDirector()->getWinSize().width - 20, 20) );
 
     // create menu, it's an autorelease object
     CCMenu* pMenu = CCMenu::create(pCloseItem, NULL);
-    pMenu->setPosition(CCPointZero);
+    pMenu->setPosition( CCPointZero );
     this->addChild(pMenu, 1);
 
     /////////////////////////////
@@ -54,12 +51,13 @@ bool HelloWorld::init()
 
     // add a label shows "Hello World"
     // create and initialize a label
-    
-    CCLabelTTF* pLabel = CCLabelTTF::create("Hello World", "Arial", 24);
-    
+    CCLabelTTF* pLabel = CCLabelTTF::create("Hello World", "Thonburi", 34);
+
+    // ask director the window size
+    CCSize size = CCDirector::sharedDirector()->getWinSize();
+
     // position the label on the center of the screen
-    pLabel->setPosition(ccp(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - pLabel->getContentSize().height));
+    pLabel->setPosition( ccp(size.width / 2, size.height - 20) );
 
     // add the label as a child to this layer
     this->addChild(pLabel, 1);
@@ -68,7 +66,7 @@ bool HelloWorld::init()
     CCSprite* pSprite = CCSprite::create("HelloWorld.png");
 
     // position the sprite on the center of the screen
-    pSprite->setPosition(ccp(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+    pSprite->setPosition( ccp(size.width/2, size.height/2) );
 
     // add the sprite as a child to this layer
     this->addChild(pSprite, 0);
@@ -76,15 +74,11 @@ bool HelloWorld::init()
     return true;
 }
 
-
 void HelloWorld::menuCloseCallback(CCObject* pSender)
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
-	CCMessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
-#else
     CCDirector::sharedDirector()->end();
+
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
-#endif
 #endif
 }
